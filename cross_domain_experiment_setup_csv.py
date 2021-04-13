@@ -52,12 +52,18 @@ with open('Train-and-Test-Splits' + separator + 'NW_cluster_train.csv', 'r') as 
 with open('Train-and-Test-Splits' + separator + 'NW_cluster_test.csv', 'r') as f:
     NW_val = [line.split(',')[1] for line in f.readlines()][1:]
 
+with open('Train-and-Test-Splits' + separator + 'SW_cluster_train.csv', 'r') as f:
+    SW_train = [line.split(',')[1] for line in f.readlines()][1:]
+
+with open('Train-and-Test-Splits' + separator + 'SW_cluster_test.csv', 'r') as f:
+    SW_val = [line.split(',')[1] for line in f.readlines()][1:]
 
 # INPUT:
 # Collect paths for the synthetic images of each region
 EM_syn = [path.replace('.txt', '.png') for path in glob.glob(r'C:\Users\sarah\Documents\TYLER\Bass\synthetic_labels\EM*.txt')]
 NE_syn = [path.replace('.txt', '.png') for path in glob.glob(r'C:\Users\sarah\Documents\TYLER\Bass\synthetic_labels\NE*.txt')]
 NW_syn = [path.replace('.txt', '.png') for path in glob.glob(r'C:\Users\sarah\Documents\TYLER\Bass\synthetic_labels\NW*.txt')]
+SW_syn = [path.replace('.txt', '.png') for path in glob.glob(r'C:\Users\sarah\Box Sync\Bass Connections 2020-2021\Wind Turbine Object Detection Dataset\Synthetic Imagery\apr6_SW_synthetic\synthetic_labels\*.txt')]
 
 # Shuffle paths
 random.shuffle(EM_train)
@@ -69,13 +75,18 @@ random.shuffle(NW_val)
 random.shuffle(EM_syn)
 random.shuffle(NE_syn)
 random.shuffle(NW_syn)
+random.shuffle(SW_train)
+random.shuffle(SW_val)
+random.shuffle(SW_syn)
 
 # INPUT:
 # Provide pairs of regions, synthetic data used for each experiment, and ratios of real and synthetic images
-ratios = [[100, 50]] # In format [[# real, # syn], ...]
-pairs = [[EM_train, EM_val], [EM_train, NW_val]] # Pairs of regions for each experiment. In format [[training_paths, validation_paths], ...]
-pairs_names = [['EM', 'EM'], ['EM', 'NW']] # Pairs of regions for each experiment, but in string format
-syn_data = [EM_syn, NW_syn] # Synthetic images for each experiment. As we are doing it now, this should match up with the validation region
+ratios = [[100, 75]] # In format [[# real, # syn], ...]
+pairs = [[SW_train, NE_val],[SW_train, NW_val], [SW_train, EM_val], [SW_train, SW_val],
+        [NE_train, SW_val], [NW_train, SW_val], [EM_train, SW_val]] # Pairs of regions for each experiment. In format [[training_paths, validation_paths], ...]
+pairs_names = [['SW', 'NE'], ['SW', 'NW'], ['SW', 'EM'], ['SW', 'SW'],
+                ['NE', 'SW'], ['NW', 'SW'], ['EM', 'SW']] # Pairs of regions for each experiment, but in string format
+syn_data = [NE_syn, NW_syn, EM_syn, SW_syn, SW_syn, SW_syn, SW_syn] # Synthetic images for each experiment. As we are doing it now, this should match up with the validation region
 
 # NAMING CONFIGURATIONS:
 # Names of the .txt files
